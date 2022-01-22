@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import { sendMail } from "../utils/emailSender.js";
 import { JWT_SECRET } from "../configs/auth.config.js";
+import user from "../models/user.js";
 
 //To-Do: sending and confirm email in ordćer to activate account
 //https://betterprogramming.pub/how-to-create-a-signup-confirmation-email-with-node-js-c2fea602872a
@@ -14,6 +15,9 @@ export const signIn = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
       return res.status(404).json({ message: "user does not exist" });
+    }
+    if(existingUser.status === "Pending"){
+      return res.status(402).json({message: "please confirm your email"})
     }
     const validPassword = await bcrypt.compare(password, existingUser.password);
 
@@ -53,15 +57,16 @@ export const signUp = async (req, res) => {
       return res.status(400).json({ message: "passwords don't match" });
     }
 
-    const token = jwt.sign({ email: email }, JWT_SECRET, { expiresIn: "1h" });
+    const confirmationCode = jwt.sign({ email: email }, JWT_SECRET, { expiresIn: "1h" });
 
     const userResult = await User.create({
       email,
       password: hashedPassword,
       name: `${firstName} ${lastName}`,
-      confirmationCode: token,
+      confirmationCode: confirmationCode,
     });
 
+    const token = jwt.sign({ email: userResult.email, id: userResult._id}, JWT_SECRET, { expiresIn: "1h" });
     res.status(200).json({ result: userResult, token });
     sendMail(userResult.name, userResult.email, userResult.confirmationCode);
 

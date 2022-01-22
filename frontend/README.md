@@ -11,3 +11,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 * moment
 * react-redux
 * redux-thunk
+* React File Base64
