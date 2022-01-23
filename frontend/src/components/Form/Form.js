@@ -14,8 +14,9 @@ const initialPostData = {
 };
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState(initialPostData);
+  
   const post = useSelector((state) =>
-    currentId ? state.posts.find((message) => message._id === currentId) : null
+    currentId ? state.postReducer.find((post) => post._id === currentId) : null
   );
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -36,11 +37,10 @@ const Form = ({ currentId, setCurrentId }) => {
     e.preventDefault();
     if (currentId === 0) {
       dispatch(createPost({ ...postData, name: user?.result?.name }));
+      clear()
     } else {
-      dispatch(
-        updatePost(currentId, { ...postData, name: user?.result?.name })
-      );
-      clear();
+      dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }));
+      clear()
     }
   };
 

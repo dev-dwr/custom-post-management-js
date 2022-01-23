@@ -15,6 +15,7 @@ import Icon from "./icon";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { signIn, signUp } from "../../actions/auth";
+import ConfirmEmailPopup from "./ConfirmEmailPopup/ConfirmEmailPopup";
 
 const initialFormDataState = {
   firstName: "",
@@ -29,22 +30,35 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignUp, setIsSingUp] = useState(false);
   const [formData, setFormData] = useState(initialFormDataState);
+  const [open, setOpen] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("profile"));
+
   const history = useHistory();
   const dispatch = useDispatch();
+
   const handleShowPassword = () => setShowPassword((prevState) => !prevState);
 
   const switchMode = () => {
     setIsSingUp((prevState) => !prevState);
     setShowPassword(false);
   };
-
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+    window.location.reload();
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (isSignUp) {
       dispatch(signUp(formData, history));
+      handleClickOpen();
+    } else {
+      dispatch(signIn(formData, history));
     }
-    dispatch(signIn(formData, history));
   };
 
   const handleChange = (e) => {
@@ -52,8 +66,7 @@ const Auth = () => {
   };
 
   const googleSuccess = async (response) => {
-    //?. it will not throw an error if we do not have access to the object. We want to make sure that we do not have an error if we won't have res obj
-    const result = response?.profileObj; //if it does not exist we would have result = undefined instead of error
+    const result = response?.profileObj;
     const token = response?.tokenId;
 
     try {
@@ -68,6 +81,11 @@ const Auth = () => {
     console.error("Google sign in was unsuccessful");
     console.error(error);
   };
+
+  if(user?.result?.userId || user?.result?.googleId){
+    history.push("/")
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <Paper className={classes.paper} elevation={3}>
@@ -126,6 +144,11 @@ const Auth = () => {
           >
             {isSignUp ? "Sign Up" : "Sign In"}
           </Button>
+          <ConfirmEmailPopup
+            open={open}
+            email={formData.email}
+            handleClose={handleClose}
+          />
           <GoogleLogin
             clientId="263777238165-tsdlubr49m6f2gvvli496j6rkgneamnj.apps.googleusercontent.com"
             render={(renderProps) => (

@@ -22,7 +22,7 @@ const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"));
-
+  //console.log(post)
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -39,8 +39,8 @@ const Post = ({ post, setCurrentId }) => {
           {moment(post.createdAt).fromNow()}
         </Typography>
       </div>
-      {(user?.result?.googleId === post?.creator ||
-        user?.result?._id === post?.creator) && (
+      {(user?.result?.googleId === post?.author ||
+        user?.result?._id === post?.author) && (
         <div className={classes.overlay2}>
           <Button
             onClick={() => setCurrentId(post._id)}
@@ -74,12 +74,13 @@ const Post = ({ post, setCurrentId }) => {
           size="small"
           color="primary"
           disabled={!user?.result}
-          onClick={() => dispatch(likePost(post._id))}
-        >
-          <Likes post={post} />
+          onClick={() => dispatch(likePost(post._id))}>
+
+          <Likes likes={post.likes} />
         </Button>
-        {(user?.result?.googleId === post?.creator ||
-          user?.result?._id === post?.creator) && (
+        {
+        (user?.result?.googleId === post?.author ||
+          user?.result?._id === post?.author) && (
           <Button
             size="small"
             color="secondary"

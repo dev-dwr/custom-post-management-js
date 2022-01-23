@@ -25,7 +25,7 @@ export const getPost = async (req, res) => {
 export const createPost = async (req, res) => {
   const postReq = req.body;
 
-  const post = new Post({...postReq, author: "PAPI", createdAt: new Date().toISOString() })
+  const post = new Post({...postReq, author: req.userId, createdAt: new Date().toISOString() })
 
   try {
       await post.save();
@@ -46,7 +46,7 @@ export const updatePost = async (req, res) => {
   const updatedPost = { title, author, message, tags, selectedFile, _id: id };
 
   try {
-    await Post.findByIdAndUpdate(id, updatePost, { new: true });
+    await Post.findByIdAndUpdate(id, updatedPost, { new: true });
   } catch (err) {
     res.status(409).json({ message: error.message });
   }
@@ -69,8 +69,6 @@ export const deletePost = async (req, res) => {
 
 export const likePost = async (req, res) => {
   const { id } = req.params;
-
-  console.log("req user id " + req.userId);
   if (!req.userId) {
     return res.json({ message: "Unauthenticated" });
   }

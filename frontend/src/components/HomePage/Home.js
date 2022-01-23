@@ -4,7 +4,7 @@ import Form from "../Form/Form";
 import Posts from "../Posts/Posts.js"
 import {useDispatch} from "react-redux";
 import {getPosts} from "../../actions/posts.js";
-
+import Navbar from "../Navbar/Navbar.js"
 
 const Home = () => {
 
@@ -14,9 +14,11 @@ const Home = () => {
   useEffect(() => {
     dispatch(getPosts());
   }, [currentId, dispatch]);
+
   return (
     <Grow in>
       <Container>
+      <Navbar/>
         <Grid
           container
           justifyContent="space-between"
@@ -27,7 +29,7 @@ const Home = () => {
             <Posts setCurrentId={setCurrentId} />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Form/>
+            <Form currentId={currentId} setCurrentId={setCurrentId}/>
           </Grid>
         </Grid>
       </Container>
