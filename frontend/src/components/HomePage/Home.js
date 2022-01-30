@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Container, Grow, Grid } from "@material-ui/core";
 import Form from "../Form/Form";
 import Posts from "../Posts/Posts.js";
 import { useDispatch } from "react-redux";
-import { getPosts, getPostsBySearch } from "../../actions/posts.js";
+import { getPostsBySearch } from "../../actions/posts.js";
 import Navbar from "../Navbar/Navbar.js";
 import PaginationComp from "../Pagination/PaginationComp";
 import { Paper, AppBar, TextField, Button } from "@mui/material";
@@ -25,28 +25,32 @@ const Home = () => {
   const [searchValue, setSearchValue] = useState("");
   const [tags, setTags] = useState([]);
 
-
   const searchPost = () => {
-    if(searchValue.trim() || tags){
-      const searchQuery = {searchValue, tags: tags.join(',')}//convert array to String with comma separator
-      dispatch(getPostsBySearch(searchQuery))
-      history.push(`posts/search?searchQuery=${searchValue || 'none'}&tags=${tags.join(',')}`)
-    } else{
-      history.push("/")
+    if (searchValue.trim() || tags) {
+      const searchQuery = { searchValue, tags: tags.join(",") }; //convert array to String with comma separator
+      dispatch(getPostsBySearch(searchQuery));
+      history.push(
+        `posts/search?searchQuery=${searchValue || "none"}&tags=${tags.join(
+          ","
+        )}`
+      );
+    } else {
+      history.push("/");
     }
-  }
+  };
 
   const handleKeyPress = (e) => {
-    if(e.keyCode === 13){ // keyCode for 13 is "Enter" so it checks whether we pressed enter
-      searchPost()
+    if (e.keyCode === 13) {
+      // keyCode for 13 is "Enter" so it checks whether we pressed enter
+      searchPost();
     }
-  }
+  };
   const handleAdd = (tag) => {
-    setTags([...tags, tag])
-  }
+    setTags([...tags, tag]);
+  };
   const handleDelete = (tagToDelete) => {
-    setTags(tags.filter(tag => tag !== tagToDelete))
-  }
+    setTags(tags.filter((tag) => tag !== tagToDelete));
+  };
 
   return (
     <Grow in>
@@ -78,19 +82,28 @@ const Home = () => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
               <ChipInput
-              style={{margin:'10px 0'}}
-              value={tags}
-              onAdd={handleAdd}
-              onDelete={handleDelete}
-              label = "Search Tags"
-              variant="outlined"
+                style={{ margin: "10px 0" }}
+                value={tags}
+                onAdd={handleAdd}
+                onDelete={handleDelete}
+                label="Search Tags"
+                variant="outlined"
               />
-              <Button variant="contained" onClick = {searchPost} className={classes.searchButton} color="primary">Search</Button>
+              <Button
+                variant="contained"
+                onClick={searchPost}
+                className={classes.searchButton}
+                color="primary"
+              >
+                Search
+              </Button>
             </AppBar>
             <Form currentId={currentId} setCurrentId={setCurrentId} />
-            <Paper elevation={6}>
-              <PaginationComp currentPage={currentPage}/>
-            </Paper>
+            {!searchValue && !tags.length && (
+              <Paper elevation={6} className={classes.pagination}>
+                <PaginationComp currentPage={currentPage} />
+              </Paper>
+            )}
           </Grid>
         </Grid>
       </Container>
