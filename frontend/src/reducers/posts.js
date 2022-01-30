@@ -4,26 +4,39 @@ import {
   UPDATE,
   DELETE,
   LIKE,
+  FETCH_BY_SEARCH,
 } from "../constants/actionTypes";
 
-const postsReducer = (posts = [], action) => {
+const postsReducer = (state = [], action) => {
   switch (action.type) {
     case FETCH_ALL:
-      return action.payload;
+      return {
+        ...state,
+        posts: action.payload.data,
+        currentPage: action.payload.page,
+        numberOfPages: action.payload.numberOfPages
+      };
     case LIKE:
-      return posts.map((post) =>
+      return state.map((post) =>
         post._id === action.payload._id ? action.payload : post
       );
     case CREATE:
-      return [...posts, action.payload];
+      return [...state, action.payload];
     case UPDATE:
-      return posts.map((post) =>
+      return state.map((post) =>
         post._id === action.payload._id ? action.payload : post
       );
     case DELETE:
-      return posts.filter((post) => post.id !== action.payload);
+      return state.filter((post) => post.id !== action.payload);
+      
+    case FETCH_BY_SEARCH:
+      return {
+        ...state,
+        posts: action.payload
+      };
+
     default:
-      return posts;
+      return state;
   }
 };
 

@@ -4,14 +4,37 @@ import mongoose from "mongoose";
 import Post from "../models/post.js";
 
 export const getPosts = async (req, res) => {
+  const {page} = req.query;
   try {
-    const posts = await Post.find();
-    res.status(200).json(posts);
+    const LIMIT = 1;
+    const startIndex = (Number(page) -1 ) * LIMIT //starting index of post on specific page 
+    const total = await Post.countDocuments({});
+
+    const posts = await Post.find().sort({_id: -1}).limit(LIMIT).skip(startIndex)// sort_id: -1 -> latest post, skip: -> skipping fetching more than we need posts
+    res.status(200).json({data: posts, currentPage: Number(page), numberOfPages: Math.ceil(total/LIMIT)});
+
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
+//query -> /posts?page=1 (query:page = 1)
+//params -> posts/123/:id params: id=123
+export const getPostsBySearch = async (req, res) => {
+  const { searchQuery, tags } = req.query;
+  try {
+    //converting to regex, because it is easier to search for mongodb
+    const title = new RegExp(searchQuery, "i"); //i stands for ignore case. (the same as toLowerCase)
+
+    const posts = await Post.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+    });
+    console.log(posts)
+    res.json({data: posts});
+  } catch (err) {
+    res.status(404).json({message: err.message})
+  }
+};
 export const getPost = async (req, res) => {
   const { id } = req.params;
   try {
@@ -25,14 +48,18 @@ export const getPost = async (req, res) => {
 export const createPost = async (req, res) => {
   const postReq = req.body;
 
-  const post = new Post({...postReq, author: req.userId, createdAt: new Date().toISOString() })
+  const post = new Post({
+    ...postReq,
+    author: req.userId,
+    createdAt: new Date().toISOString(),
+  });
 
   try {
-      await post.save();
+    await post.save();
 
-      res.status(201).json(post);
+    res.status(201).json(post);
   } catch (error) {
-      res.status(409).json({ message: error.message });
+    res.status(409).json({ message: error.message });
   }
 };
 

@@ -4,18 +4,28 @@ import {
   UPDATE,
   DELETE,
   LIKE,
+  FETCH_BY_SEARCH
 } from "../constants/actionTypes";
 import * as api from "../api/index.js";
 
-export const getPosts = () => async (dispatch) => {
+export const getPosts = (page) => async (dispatch) => {
   try {
-    const { data } = await api.fetchPosts();
+    const { data } = await api.fetchPosts(page);
+    console.log(data)
     dispatch({ type: FETCH_ALL, payload: data });
   } catch (error) {
     console.log(error);
   }
 };
-
+export const getPostsBySearch = (searchQuery) => async (dispatch) => {
+  try{
+    const {data: {data}} = await api.fetchPostsBySearch(searchQuery); // restruction of nested data object like that
+    console.log(data);
+    dispatch({type: FETCH_BY_SEARCH, payload:data})
+  } catch(err){
+    console.error(err);
+  }
+}
 export const createPost = (post) => async (dispatch) => {
   try {
     const { data } = await api.createPost(post);
@@ -49,3 +59,4 @@ export const deletePost = (id) => async (dispatch) => {
     console.log(err);
   }
 };
+

@@ -4,7 +4,7 @@ import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 
 const Likes = ({likes}) => {
     const user = JSON.parse(localStorage.getItem('profile'));
-    console.log(likes)
+    
     if(likes || likes?.length > 0){
         return likes?.find(like => like === (user?.result?.googleId || user?.result?._id)) ?
         (

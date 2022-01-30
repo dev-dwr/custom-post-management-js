@@ -6,14 +6,14 @@ import Post from "./Post/Post.js"
 
 
 const Posts = ({setCurrentId}) => {
-  const posts = useSelector((state) => state.postReducer);
+  const {posts} = useSelector((state) => state.postReducer);
   const classes = useStyles();
 
   return (
-    !posts.length ? <CircularProgress /> : (
+    !posts?.length ? <CircularProgress /> : (
       <Grid className={classes.container} container alignItems="stretch" spacing={3}>
-        {posts.map((post) => (
-          <Grid key={post._id} item xs={12} sm={6} md={6}>
+        {posts?.map((post) => (
+          <Grid key={post._id} item xs={12} sm={12} md={6} lg={3}>
             <Post post={post} setCurrentId={setCurrentId} />
           </Grid>
         ))}
