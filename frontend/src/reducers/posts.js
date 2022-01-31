@@ -6,7 +6,8 @@ import {
   LIKE,
   FETCH_BY_SEARCH,
   START_LOADING,
-  END_LOADING
+  END_LOADING,
+  FETCH_POST
 } from "../constants/actionTypes";
 
 const postsReducer = (state = {isLoading: true, posts: []}, action) => {
@@ -46,7 +47,11 @@ const postsReducer = (state = {isLoading: true, posts: []}, action) => {
         ...state,
         posts: action.payload
       };
-
+    case FETCH_POST:
+      return {
+        ...state,
+        post: action.payload
+      }
     default:
       return state;
   }
