@@ -29,7 +29,7 @@ export const getPostsBySearch = async (req, res) => {
     const posts = await Post.find({
       $or: [{ title }, { tags: { $in: tags.split(",") } }],
     });
-    console.log(posts)
+
     res.json({data: posts});
   } catch (err) {
     res.status(404).json({message: err.message})
@@ -124,3 +124,21 @@ export const likePost = async (req, res) => {
       .json({ message: `An error occured while liking a post: ${err}` });
   }
 };
+
+
+export const commentPost = async (req, res) => {
+  const {id} = req.params;
+  const {commentValue} = req.body;
+  console.log(commentValue);
+  try{
+     
+  const post = await Post.findById(id);
+  
+  post.comments.push(commentValue);
+
+  const updatedPost = await Post.findByIdAndUpdate(id, post, {new: true});
+  res.json(updatedPost);
+  }catch(err){
+    console.log(err)
+  }
+}

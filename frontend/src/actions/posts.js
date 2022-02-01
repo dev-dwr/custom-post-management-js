@@ -7,7 +7,8 @@ import {
   FETCH_BY_SEARCH,
   START_LOADING,
   END_LOADING,
-  FETCH_POST
+  FETCH_POST,
+  COMMENT
 } from "../constants/actionTypes";
 import * as api from "../api/index.js";
 
@@ -40,7 +41,6 @@ export const getPostsBySearch = (searchQuery) => async (dispatch) => {
     const {
       data: { data },
     } = await api.fetchPostsBySearch(searchQuery); // restruction of nested data object like that
-    console.log(data);
     dispatch({ type: FETCH_BY_SEARCH, payload: data });
     dispatch({ type: END_LOADING });
   } catch (err) {
@@ -83,3 +83,16 @@ export const deletePost = (id) => async (dispatch) => {
     console.log(err);
   }
 };
+
+
+export const commentPost = (commentValue, postId) => async (dispatch) => {
+  try{
+    const {data} = await api.comment(commentValue, postId);
+    console.log(data.comments);
+
+    dispatch({type: COMMENT, payload: data})
+    return data.comments;
+  }catch(err){
+    console.log(err)
+  }
+}

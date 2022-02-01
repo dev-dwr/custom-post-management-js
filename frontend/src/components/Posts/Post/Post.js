@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   Card,
   CardActions,
@@ -6,8 +6,7 @@ import {
   CardMedia,
   Button,
   Typography,
-  ButtonBase,
-} from "@material-ui/core/";
+} from "@material-ui/core";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
@@ -25,14 +24,24 @@ const Post = ({ post, setCurrentId }) => {
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"));
   const history = useHistory();
-
+  const [likes, setLikes] = useState(post?.likes);
   const openPost = () => {
     history.push(`/posts/${post._id}`);
   };
 
+  const handleLike = async () => {
+    dispatch(likePost(post._id));
+    const isPostLiked = post.likes.find(like => like === (user?.result?.googleId || user?.result?._id));
+    const userId = (user?.result?.googleId || user?.result?._id)
+    if(isPostLiked){
+        setLikes(post.likes.filter(id => id !== userId));
+    }else{
+      setLikes([...post.likes, userId])
+    }
+
+  }
   return (
     <Card className={classes.card} raised elevation={6}>
-      <ButtonBase className={classes.cardAction} onClick={openPost} component="span">
         <CardMedia
           className={classes.media}
           image={
@@ -40,6 +49,7 @@ const Post = ({ post, setCurrentId }) => {
             "https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png"
           }
           title={post.title}
+          onClick={openPost}
         />
 
         <div className={classes.overlay}>
@@ -73,20 +83,19 @@ const Post = ({ post, setCurrentId }) => {
         >
           {post.title}
         </Typography>
-        <CardContent>
+        <CardContent onClick ={openPost}>
           <Typography variant="body2" color="textSecondary" component="p">
             {post.message}
           </Typography>
         </CardContent>
-      </ButtonBase>
       <CardActions className={classes.cardActions}>
         <Button
           size="small"
           color="primary"
           disabled={!user?.result}
-          onClick={() => dispatch(likePost(post._id))}
+          onClick={handleLike}
         >
-          <Likes likes={post.likes} />
+          <Likes likes={likes} />
         </Button>
         {(user?.result?.googleId === post?.author ||
           user?.result?._id === post?.author) && (

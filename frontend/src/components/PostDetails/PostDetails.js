@@ -11,7 +11,8 @@ import { useParams, useHistory } from "react-router-dom";
 import Navbar from "../Navbar/Navbar"
 import { getPost, getPostsBySearch } from "../../actions/posts";
 import useStyles from "./styles.js";
-
+import Comments from "./Comments/Comments";
+import {Link} from "react-router-dom"
 //rafce
 const PostDetails = () => {
   const { post, posts, isLoading } = useSelector((state) => state.postReducer);
@@ -48,42 +49,32 @@ const PostDetails = () => {
   return (
     <>
     <Navbar/>
-    <Paper style={{ padding: "20px", borderRadius: "15px" }} elevation={6}>
+    <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}>
       <div className={classes.card}>
         <div className={classes.section}>
-          <Typography variant="h3" component="h2">
-            {post.title}
+          <Typography variant="h3" component="h2">{post.title}</Typography>
+          <Typography gutterBottom variant="h6" color="textSecondary" component="h2">{post.tags.map((tag) => (
+            <Link to={`/tags/${tag}`} style={{ textDecoration: 'none', color: '#3f51b5' }} key ={tag}>
+              {` #${tag} `}
+            </Link>
+          ))}
           </Typography>
-          <Typography
-            gutterBottom
-            variant="h6"
-            color="textSecondary"
-            component="h2"
-          >
-            {post.tags.map((tag) => `#${tag} `)}
+          <Typography gutterBottom variant="body1" component="p">{post.message}</Typography>
+          <Typography variant="h6">
+            Created by:
+            <Link to={`/creators/${post.name}`} style={{ textDecoration: 'none', color: '#3f51b5' }}>
+              {` ${post.name}`}
+            </Link>
           </Typography>
-          <Typography gutterBottom variant="body1" component="p">
-            {post.message}
-          </Typography>
-          <Typography variant="h6">Created by: {post.name}</Typography>
-          <Typography variant="body1">
-            {moment(post.createdAt).fromNow()}
-          </Typography>
-          <Divider style={{ margin: "20px 0" }} />
-          <Divider style={{ margin: "20px 0" }} />
-          <Divider style={{ margin: "20px 0" }} />
+          <Typography variant="body1">{moment(post.createdAt).fromNow()}</Typography>
+          <Divider style={{ margin: '20px 0' }} />
+          <Divider style={{ margin: '20px 0' }} />
         </div>
         <div className={classes.imageSection}>
-          <img
-            className={classes.media}
-            src={
-              post.selectedFile ||
-              "https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png"
-            }
-            alt={post.title}
-          />
+          <img className={classes.media} src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} alt={post.title} />
         </div>
       </div>
+      <Comments post={post} />
       {!!recommendedPosts.length && (
         <div className={classes.section}>
           <Typography gutterBottom variant="h5">You might also like:</Typography>

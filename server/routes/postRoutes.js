@@ -7,6 +7,7 @@ import {
   likePost,
   deletePost,
   getPostsBySearch,
+  commentPost
 } from "../controllers/postsController.js";
 
 import auth from "../middleware/auth.js";
@@ -17,6 +18,9 @@ postRouter.get("/search", getPostsBySearch);
 postRouter.get("/:id", getPost);
 postRouter.get("/", getPosts);
 postRouter.post("/", auth, createPost);
+
+postRouter.post("/:id/commentPost", auth, commentPost);
+
 postRouter.patch("/:id", auth, updatePost);
 postRouter.delete("/:id", auth, deletePost);
 postRouter.get("/:id", getPost);
