@@ -1,5 +1,6 @@
 # Custom Post Management Application
 Crud App for managing posts with authentication(JWT).
+<img width="1438" alt="Screenshot 2022-02-03 at 17 45 42" src="https://user-images.githubusercontent.com/42837489/152388407-c3f2c544-910e-4a2f-b909-469b9ef8a52f.png">
 
 ## Additional features
 * liking posts
