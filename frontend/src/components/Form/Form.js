@@ -10,7 +10,7 @@ import useStyles from "./styles";
 const initialPostData = {
   title: "",
   message: "",
-  tags: "",
+  tags: '',
   selectedFile: "",
 };
 const Form = ({ currentId, setCurrentId }) => {

@@ -20,7 +20,7 @@ export const fetchPost = (id) => API.get(`/posts/${id}`);
 
 export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.searchValue || 'none'}&tags=${searchQuery.tags}`)
 
-export const comment = (commentValue, postId) => API.post(`/posts/${postId}/commentPost`, {commentValue}); //errrrror
+export const comment = (commentValue, postId) => API.post(`/posts/${postId}/commentPost`, {commentValue}); 
 
 export const signIn = (formData) => API.post("auth/signin", formData);
 export const signUp = (formData) => API.post("auth/signup", formData);

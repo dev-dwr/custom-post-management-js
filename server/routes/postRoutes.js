@@ -17,7 +17,7 @@ const postRouter = express.Router();
 postRouter.get("/search", getPostsBySearch);
 postRouter.get("/:id", getPost);
 postRouter.get("/", getPosts);
-postRouter.post("/", auth, createPost);
+postRouter.post("/", createPost); //////////////
 
 postRouter.post("/:id/commentPost", auth, commentPost);
 

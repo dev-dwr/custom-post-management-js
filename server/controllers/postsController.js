@@ -6,7 +6,7 @@ import Post from "../models/post.js";
 export const getPosts = async (req, res) => {
   const {page} = req.query;
   try {
-    const LIMIT = 1;
+    const LIMIT = 5;
     const startIndex = (Number(page) -1 ) * LIMIT //starting index of post on specific page 
     const total = await Post.countDocuments({});
 
@@ -47,7 +47,6 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
   const postReq = req.body;
-
   const post = new Post({
     ...postReq,
     author: req.userId,
