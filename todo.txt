@@ -1,2 +1,0 @@
-1. sending email
-2. docker compose dockerize whole application
